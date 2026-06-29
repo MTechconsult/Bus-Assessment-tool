@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SalesIQ — Free Business Diagnostic</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono&display=swap');
+
+:root {
+  --navy:      #0A0F1E;
+  --navy-mid:  #111827;
+  --card:      #141C2E;
+  --gold:      #C9A84C;
+  --gold-l:    #E8C97A;
+  --gold-d:    #8B6F2E;
+  --cream:     #F0EAE0;
+  --muted:     #7A8499;
+  --border:    rgba(201,168,76,0.18);
+  --border2:   rgba(255,255,255,0.06);
+  --green-l:   #22C55E;
+  --text:      #C4CDD8;
+  --white:     #FFFFFF;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--navy); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; min-height: 100vh; }
+
+#prog { position:fixed; top:0; left:0; height:2px; background:linear-gradient(90deg,var(--gold),var(--gold-l)); z-index:999; transition:width .3s; width:0; }
+
+header { border-bottom: 1px solid var(--border); background: rgba(10,15,30,0.96); backdrop-filter: blur(12px); position: sticky; top: 0; z-index: 100; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 58px; }
+.logo { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 900; color: var(--white); letter-spacing: -0.5px; }
+.logo span { color: var(--gold); }
+.header-badge { font-size: 10px; font-weight: 600; color: var(--gold); border: 1px solid var(--gold-d); padding: 3px 10px; border-radius: 20px; letter-spacing: 1.5px; text-transform: uppercase; }
+
+.hero { text-align: center; padding: 64px 24px 48px; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201,168,76,0.07) 0%, transparent 70%); border-bottom: 1px solid var(--border2); }
+.hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 10px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; opacity: .8; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px,5vw,52px); font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 10px; }
+.hero h1 em { color: var(--gold); font-style: normal; display:block; }
+.hero p { color: var(--muted); font-size: 15px; max-width: 520px; margin: 0 auto 32px; font-weight: 300; }
+.hero-chips { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.hero-chip { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 6px 16px; font-size: 12px; color: var(--cream); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+.hero-chip span { color: var(--gold); }
+
+.tab-bar { display: flex; background: var(--navy-mid); border-bottom: 1px solid var(--border2); padding: 0 16px; gap: 4px; position: sticky; top: 58px; z-index: 99; }
+.tab-btn { padding: 14px 24px; border: none; background: none; color: var(--muted); font-size: 13px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .2s; font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 7px; }
+.tab-btn:hover { color: var(--cream); }
+.tab-btn.active { color: var(--gold-l); border-bottom-color: var(--gold); }
+.tab-btn .tab-num { background: var(--card); border: 1px solid var(--border2); color: var(--muted); font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; font-family: 'Space Mono', monospace; }
+.tab-btn.active .tab-num { background: rgba(201,168,76,.15); color: var(--gold); border-color: var(--gold-d); }
+
+.panel { display: none; max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+.panel.active { display: block; }
+
+.section-label { font-family: 'Space Mono', monospace; font-size: 9px; letter-spacing: 3px; color: var(--gold-d); text-transform: uppercase; margin-bottom: 6px; }
+.section-title { font-family: 'Playfair Display', serif; font-size: clamp(20px,3.5vw,28px); font-weight: 700; color: var(--white); margin-bottom: 8px; line-height: 1.25; }
+.section-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--cream); letter-spacing: .5px; margin-bottom: 7px; text-transform: uppercase; }
+.form-group label span { color: var(--gold); font-size: 11px; font-weight: 400; text-transform: none; letter-spacing:0; }
+input[type=text], textarea { width: 100%; background: var(--card); border: 1px solid var(--border2); border-radius: 6px; color: var(--cream); font-size: 14px; padding: 12px 14px; outline: none; font-family: 'Inter', sans-serif; transition: border-color .2s; }
+input[type=text]:focus, textarea:focus { border-color: var(--gold-d); }
+textarea { resize: vertical; min-height: 90px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:560px){ .form-row { grid-template-columns: 1fr; } }
+
+.btn-primary { background: var(--gold); color: var(--navy); border: none; border-radius: 6px; padding: 13px 28px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .2s; letter-spacing: .3px; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary:hover { background: var(--gold-l); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-secondary { background: transparent; color: var(--gold); border: 1px solid var(--gold-d); border-radius: 6px; padding: 11px 22px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all .2s; }
+.btn-secondary:hover { background: rgba(201,168,76,.08); }
+
+.question-card { background: var(--card); border: 1px solid var(--border2); border-radius: 10px; padding: 22px 24px; margin-bottom: 16px; }
+.question-card .q-text { font-size: 14px; font-weight: 600; color: var(--cream); margin-bottom: 14px; }
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+.q-option { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 6px; border: 1px solid var(--border2); cursor: pointer; transition: all .2s; background: var(--navy-mid); }
+.q-option:hover { border-color: var(--gold-d); background: rgba(201,168,76,.05); }
+.q-option input[type=radio] { accent-color: var(--gold); width:15px; height:15px; flex-shrink:0; }
+.q-option label { cursor: pointer; font-size: 13.5px; color: var(--text); flex:1; }
+.q-option.selected { border-color: var(--gold); background: rgba(201,168,76,.08); }
+.q-option.selected label { color: var(--gold-l); }
+
+.score-container { text-align: center; padding: 32px 0 24px; }
+.score-ring-wrap { position: relative; display: inline-block; }
+.score-ring-wrap svg { transform: rotate(-90deg); }
+.score-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.score-num { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--white); line-height: 1; }
+.score-label { font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top:4px; }
+.score-grade { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; margin-top: 16px; }
+
+.result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 14px; margin: 24px 0; }
+.result-card { background: var(--card); border: 1px solid var(--border2); border-radius: 8px; padding: 18px 20px; }
+.result-card .rc-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; font-family:'Space Mono',monospace; }
+.result-card .rc-score { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; line-height:1; margin-bottom:4px; }
+.result-card .rc-name { font-size:13px; font-weight:600; color:var(--cream); margin-bottom:6px; }
+.result-card .rc-bar { height:4px; background:var(--border2); border-radius:2px; overflow:hidden; margin-top:10px; }
+.result-card .rc-bar-fill { height:100%; border-radius:2px; transition:width 1s ease; }
+
+.ai-output { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 28px; margin-top: 24px; position: relative; min-height: 120px; }
+.ai-output .ai-label { font-family:'Space Mono',monospace; font-size:9px; letter-spacing:3px; color:var(--gold); text-transform:uppercase; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.ai-label::after { content:''; flex:1; height:1px; background:var(--border); }
+.ai-output p { color: var(--text); font-size: 14px; line-height: 1.75; margin-bottom: 14px; }
+.ai-output p:last-child { margin-bottom: 0; }
+.ai-output h4 { color: var(--gold-l); font-size:14px; font-weight:700; margin:20px 0 8px; }
+.ai-output ul { padding-left: 20px; }
+.ai-output ul li { color: var(--text); font-size:14px; line-height:1.7; margin-bottom:6px; }
+.ai-output strong { color: var(--cream); }
+
+.loading-pulse { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; padding: 20px 0; }
+.pulse-dots { display:flex; gap:5px; }
+.pulse-dots span { width:7px; height:7px; border-radius:50%; background:var(--gold-d); animation:pulse 1.2s infinite; }
+.pulse-dots span:nth-child(2){ animation-delay:.2s; }
+.pulse-dots span:nth-child(3){ animation-delay:.4s; }
+@keyframes pulse { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+.copy-btn { position:absolute; top:16px; right:16px; background:rgba(201,168,76,.1); border:1px solid var(--gold-d); color:var(--gold); border-radius:5px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; transition:all .2s; }
+.copy-btn:hover { background:rgba(201,168,76,.2); }
+
+.gold-line { height:1px; background:linear-gradient(90deg,transparent,var(--gold-d),transparent); margin:32px 0; }
+
+.upsell-banner { background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.04)); border: 1px solid var(--gold-d); border-radius: 12px; padding: 32px 28px; margin-top: 40px; text-align:center; }
+.upsell-banner h3 { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--white); margin-bottom:10px; }
+.upsell-features { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:28px; }
+.upsell-feat { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--cream); }
+.upsell-feat::before { content:'✓'; color:var(--green-l); font-weight:700; }
+
+#toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:var(--gold); color:var(--navy); padding:10px 22px; border-radius:6px; font-size:13px; font-weight:700; transition:transform .3s; z-index:999; pointer-events:none; }
+#toast.show { transform:translateX(-50%) translateY(0); }
+
+@media(max-width:640px){ .panel { padding: 28px 16px 80px; } .ai-output { padding:20px; } .upsell-banner { padding:24px 18px; } }
+</style>
+</head>
+<body>
+
+<div id="prog"></div>
+<div id="toast">Copied ✓</div>
+
+<header>
+  <div class="logo">Sales<span>IQ</span></div>
+  <div class="header-badge">Free Tool</div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Business Growth Intelligence</div>
+  <h1>Find Out Exactly<br><em>Why Your Sales Are Stuck</em></h1>
+  <p>Answer 12 questions. Get your business score, a personalised diagnosis, and a prioritised action plan — in under 5 minutes.</p>
+  <div class="hero-chips">
+    <div class="hero-chip"><span>🔍</span> Check My Business</div>
+    <div class="hero-chip"><span>📋</span> Get My Action Plan</div>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <button class="tab-btn active" onclick="switchTab(0)">
+    <span>🔍</span> Check My Business <span class="tab-num">Step 1</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab(1)">
+    <span>📋</span> My Action Plan <span class="tab-num">Step 2</span>
+  </button>
+</div>
+
+<!-- PANEL 0: DIAGNOSIS -->
+<div class="panel active" id="panel-0">
+
+  <div class="section-label">Step 1 of 2</div>
+  <div class="section-title">Tell me about your business</div>
+  <div class="section-sub">The more honest your answers, the more useful your results.</div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label>Your Business Type <span>e.g. clothing store, consulting, food</span></label>
+      <input type="text" id="biz-type" placeholder="e.g. Online clothing store">
+    </div>
+    <div class="form-group">
+      <label>Target Customers <span>Who do you sell to?</span></label>
+      <input type="text" id="biz-audience" placeholder="e.g. Working women aged 25–45">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Your Biggest Sales Challenge Right Now <span>Be specific</span></label>
+    <textarea id="biz-challenge" placeholder="e.g. People ask about my prices then go quiet. I get interest on social media but very few actually buy."></textarea>
+  </div>
+
+  <div class="gold-line"></div>
+
+  <div class="section-label">Self-Assessment</div>
+  <div class="section-title" style="font-size:20px;">12 Questions That Reveal Your Sales Reality</div>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:24px;">Select the answer that honestly reflects where your business is today — not where you want it to be.</p>
+
+  <div id="questions-container"></div>
+
+  <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+    <button class="btn-primary" onclick="runDiagnosis()" id="diagnose-btn">🔍 Check My Business</button>
+    <span id="q-counter" style="font-size:12px;color:var(--muted);">0 of 12 answered</span>
+  </div>
+
+  <div id="diagnosis-result" style="display:none;margin-top:36px;">
+    <div class="gold-line"></div>
+    <div class="section-label">Your Results</div>
+    <div class="section-title" style="font-size:22px;">Here's What's Really Happening</div>
+
+    <div class="score-container">
+      <div class="score-ring-wrap">
+        <svg width="160" height="160" viewBox="0 0 160 160">
+          <circle cx="80" cy="80" r="66" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="10"/>
+          <circle id="score-arc" cx="80" cy="80" r="66" fill="none" stroke="url(#gold-grad)" stroke-width="10"
+            stroke-linecap="round" stroke-dasharray="414.7" stroke-dashoffset="414.7" style="transition:stroke-dashoffset 1.2s ease"/>
+          <defs>
+            <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8B6F2E"/>
+              <stop offset="100%" stop-color="#E8C97A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-center">
+          <div class="score-num" id="score-display">0</div>
+          <div class="score-label">/ 100</div>
+        </div>
+      </div>
+      <div class="score-grade" id="score-grade"></div>
+    </div>
+
+    <div class="result-grid" id="dimension-grid"></div>
+
+    <div class="ai-output" id="diag-ai-output">
+      <div class="ai-label">AI Analysis</div>
+      <div class="loading-pulse">
+        <div class="pulse-dots"><span></span><span></span><span></span></div>
+        Analysing your business...
+      </div>
+    </div>
+
+    <div style="margin-top:20px;">
+      <button class="btn-primary" onclick="switchTab(1);buildActionPlan()">📋 Get My Action Plan →</button>
+    </div>
+
+    <div id="diag-upsell-container" style="margin-top:32px;"></div>
+  </div>
+</div>
+
+<!-- PANEL 1: ACTION PLAN -->
+<div class="panel" id="panel-1">
+  <div class="section-label">Step 2 of 2</div>
+  <div class="section-title">Your Personalised Action Plan</div>
+  <div class="section-sub">Based on your diagnosis — your highest-impact moves, in order of priority.</div>
+
+  <div id="action-plan-container">
+    <div style="text-align:center;padding:60px 20px;color:var(--muted);">
+      <div style="font-size:32px;margin-bottom:12px;">🔍</div>
+      <p>Complete your business check first to unlock your action plan.</p>
+      <button class="btn-secondary" style="margin-top:16px;" onclick="switchTab(0)">Check My Business</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  { dim:"Positioning", text:"When someone asks what makes your business different from competitors, how clear is your answer?", options:[{text:"I struggle to explain it — we're similar to others",score:0},{text:"I have a rough idea but it's not clearly communicated",score:1},{text:"I can explain it clearly and customers notice the difference",score:2},{text:"My differentiation is my strongest selling point",score:3}]},
+  { dim:"Trust", text:"How much visible proof do you have that your product or service works?", options:[{text:"Little to none — mostly just my word",score:0},{text:"A few testimonials but not result-focused",score:1},{text:"Several solid testimonials or case studies",score:2},{text:"Strong portfolio of results that I show to every prospect",score:3}]},
+  { dim:"Messaging", text:"How well does your marketing speak directly to your customer's specific problem?", options:[{text:"It mostly talks about my products or what I offer",score:0},{text:"It mentions the problem but isn't very specific",score:1},{text:"It addresses their problem but could be sharper",score:2},{text:"Every piece of content hits their exact pain point",score:3}]},
+  { dim:"Follow-Up", text:"What happens after a potential customer shows interest but doesn't buy immediately?", options:[{text:"Nothing — I wait for them to come back",score:0},{text:"I follow up once or twice then give up",score:1},{text:"I have an informal follow-up routine",score:2},{text:"I have a structured sequence that runs until they decide",score:3}]},
+  { dim:"Pricing", text:"How do you handle a potential customer who says 'it's too expensive'?", options:[{text:"I usually offer a discount to keep them",score:0},{text:"I explain my prices but often lose them",score:1},{text:"I reframe the value but it doesn't always work",score:2},{text:"I confidently show the cost of not buying and rarely discount",score:3}]},
+  { dim:"Content", text:"How consistently do you publish content or communicate with your audience?", options:[{text:"Rarely — only when I have something to sell",score:0},{text:"Occasionally but without a plan",score:1},{text:"Regularly but the content isn't always strategic",score:2},{text:"Consistently, with a clear mix of education, proof, and offers",score:3}]},
+  { dim:"Positioning", text:"How well-defined is your ideal customer?", options:[{text:"Everyone is my customer — I sell to anyone",score:0},{text:"I have a general idea but haven't defined it clearly",score:1},{text:"I know who they are but don't always speak to them specifically",score:2},{text:"I have a precise customer profile and all my marketing speaks to them",score:3}]},
+  { dim:"Trust", text:"Do you offer any form of guarantee, trial, or risk reversal to new customers?", options:[{text:"No — they buy or they don't",score:0},{text:"I've thought about it but haven't implemented one",score:1},{text:"I offer something informal but don't promote it",score:2},{text:"Yes — a clear, well-communicated guarantee is part of my offer",score:3}]},
+  { dim:"Funnel", text:"What happens between someone first discovering you and them making a purchase?", options:[{text:"Nothing — I put out content and then ask for a sale",score:0},{text:"I send them to my page but there's no real nurturing",score:1},{text:"I have some email or message sequence but it's basic",score:2},{text:"I have a clear funnel that builds trust before asking for a sale",score:3}]},
+  { dim:"Messaging", text:"How often do people tell you they 'need to think about it' or 'will get back to you'?", options:[{text:"Almost every time — it's my biggest frustration",score:0},{text:"Often — probably half of my conversations",score:1},{text:"Sometimes — I convert maybe half of interested leads",score:2},{text:"Rarely — most interested people buy or give a clear reason why not",score:3}]},
+  { dim:"Referrals", text:"How much of your new business comes from referrals or word of mouth?", options:[{text:"Very little — I have no referral system",score:0},{text:"A few here and there but nothing I can rely on",score:1},{text:"A decent amount — maybe 20–30% of new customers",score:2},{text:"Referrals are a major channel — I've built a system for it",score:3}]},
+  { dim:"Funnel", text:"How easy is it for someone to buy from you the moment they decide to?", options:[{text:"There are several steps — it can be confusing",score:0},{text:"It's okay but not as smooth as it could be",score:1},{text:"Fairly easy — most people can figure it out",score:2},{text:"Completely frictionless — one clear action and they're done",score:3}]},
+];
+
+const MODULE_MAP = {
+  "Positioning": { module:"Module 3", title:"Positioning That Wins", hook:"how to own a specific space in your buyer's mind so they think of you — and only you — when they're ready to buy.", icon:"🎯" },
+  "Trust":       { module:"Module 4", title:"The Trust Architecture", hook:"how to build a trust stack — proof, authority, and risk reversal — that makes buyers feel safe saying yes.", icon:"🛡️" },
+  "Messaging":   { module:"Module 1", title:"The Buyer's Mind", hook:"the exact psychological triggers that move people from interest to action — and how to use them in every message you write.", icon:"🧠" },
+  "Follow-Up":   { module:"Module 6", title:"Follow-Up That Converts", hook:"the complete 7-touch follow-up sequence that turns cold, quiet leads into paying customers — without being pushy.", icon:"🔁" },
+  "Pricing":     { module:"Module 10", title:"Pricing Psychology", hook:"how to charge more, discount less, and use anchoring and bundling so buyers see your price as the obvious choice.", icon:"💰" },
+  "Content":     { module:"Module 8", title:"Content That Sells", hook:"the 50/20/15/15 content mix and the AIDA structure that moves your audience from scrolling to buying.", icon:"✍️" },
+  "Funnel":      { module:"Module 9", title:"Your Sales Funnel", hook:"how to build the trust-nurturing middle of your funnel that most businesses skip — and where most sales are actually lost.", icon:"🔽" },
+  "Referrals":   { module:"Module 11", title:"Referral Intelligence", hook:"how to build a deliberate referral system that turns your happiest customers into a sales team that works for free.", icon:"🤝" }
+};
+
+const SYSTEM_PROMPT = `You are the AI coach behind a sales and marketing growth program called "Why Customers Look But Never Buy - And Exactly How to Fix It". Every piece of advice you give comes DIRECTLY from this program. 
+
+CRITICAL RULES — NEVER BREAK THESE:
+1. NEVER use the words: book, ebook, read, download, pages, chapter. Use "module," "section," or "the full guide" instead.
+2. Every solution must come from a specific module of this program
+3. Always reference it as "Module X of the program" or "inside the full guide"
+4. Give ONE concrete first step from the relevant module as a taste — not the full system
+5. Make clear the complete system is inside the full guide
+6. Write in plain simple language — short sentences, no jargon, talk like a real person
+7. Trigger emotion and curiosity — make them feel understood and want to know more
+8. Be specific to their type of business
+
+PROGRAM CONTENT:
+
+MODULE 1: THE BUYER'S MIND
+People do not buy products. They buy feelings, outcomes, and the relief of a problem being solved. Every purchase is emotional first, logical second.
+THE 5 BUYING TRIGGERS: 1. Pain Avoidance 2. Status and Identity 3. Safety and Trust 4. Urgency and Scarcity 5. Specific Outcome
+THE BUYER DECISION LOOP: Awareness → Search → Evaluation → Trust Verification → Purchase Decision
+
+MODULE 2: MARKET INTELLIGENCE
+The business that knows its market best will always win. THE GAP METHOD: Read competitor complaints online — those are your opportunities.
+
+MODULE 3: POSITIONING THAT WINS
+POSITIONING STATEMENT FORMULA: For [specific customer] who struggle with [specific problem], your business provides [specific solution], unlike the alternative because [your difference]. Biggest mistake: trying to appeal to everyone.
+
+MODULE 4: THE TRUST ARCHITECTURE
+THE TRUST STACK: 1. Proof of Results 2. Personal Authority 3. Risk Reversal (guarantees) 4. Consistent Presence
+
+MODULE 5: CLOSING WITHOUT PRESSURE
+THE SOLVE FRAMEWORK: S-Situation, O-Outcome, L-Loss (cost of staying stuck), V-Value (how you bridge the gap), E-Easy Next Step
+
+MODULE 6: FOLLOW-UP THAT CONVERTS
+THE 7-TOUCH FOLLOW-UP SEQUENCE: Day 1 recap, Day 3 value, Day 5 proof, Day 8 objection answer, Day 12 urgency, Day 16 last call, Day 30 long game.
+
+MODULE 7: THE ATTENTION ECONOMY
+THE 3-SECOND TEST: content must trigger curiosity, promise a specific outcome, or provoke a reaction — instantly.
+
+MODULE 8: CONTENT THAT SELLS
+THE CONTENT MIX 50/20/15/15: 50% education, 20% proof, 15% behind the scenes, 15% direct offer. THE AIDA STRUCTURE: Attention, Interest, Desire, Action.
+
+MODULE 9: YOUR SALES FUNNEL
+THE 4-STAGE FUNNEL: Awareness → Interest (lead magnets) → Decision (proof, offers) → Action (frictionless purchase). Most businesses only have Stage 1 and 4. The money is in Stages 2 and 3.
+
+MODULE 10: PRICING PSYCHOLOGY
+6 PRINCIPLES: Anchor High, Bundle for Value, Create Tiers, Reduce Payment Friction, Name Your Price, Frame Against Inaction.
+
+MODULE 11: REFERRAL INTELLIGENCE
+THE 5-STEP REFERRAL ENGINE: Deliver results → Ask at peak moment → Make it easy → Reward it → Track and repeat.
+
+MODULE 12: THE 90-DAY PLAN
+Month 1 Foundation: Positioning, Trust Stack, Follow-Up System, Pricing.
+Month 2 Execution: Content, Funnel, Market Intelligence, Referrals.
+Month 3 Scale: Optimise, New revenue stream, Pipeline, Plan next quarter.`;
+
+let answers = new Array(QUESTIONS.length).fill(null);
+let diagnosisData = null;
+
+function renderQuestions() {
+  document.getElementById('questions-container').innerHTML = QUESTIONS.map((q,qi) => `
+    <div class="question-card">
+      <div class="q-text">${qi+1}. ${q.text}</div>
+      <div class="q-options">
+        ${q.options.map((opt,oi) => `
+          <div class="q-option" id="opt-${qi}-${oi}" onclick="selectOption(${qi},${oi},${opt.score})">
+            <input type="radio" name="q${qi}" id="r-${qi}-${oi}">
+            <label for="r-${qi}-${oi}">${opt.text}</label>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectOption(qi, oi, score) {
+  answers[qi] = { oi, score, dim: QUESTIONS[qi].dim };
+  QUESTIONS[qi].options.forEach((_,i) => document.getElementById(`opt-${qi}-${i}`).classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  document.getElementById(`r-${qi}-${oi}`).checked = true;
+  document.getElementById('q-counter').textContent = `${answers.filter(a=>a!==null).length} of 12 answered`;
+}
+
+async function runDiagnosis() {
+  const bizType = document.getElementById('biz-type').value.trim();
+  const audience = document.getElementById('biz-audience').value.trim();
+  const challenge = document.getElementById('biz-challenge').value.trim();
+  if (!bizType || !audience) { alert('Please fill in your business type and target customers first.'); return; }
+  const answered = answers.filter(a=>a!==null).length;
+  if (answered < 10) { alert(`Please answer at least 10 questions (${answered}/12 answered).`); return; }
+
+  const dimScores = {}, dimMax = {};
+  answers.forEach(a => {
+    if (!a) return;
+    if (!dimScores[a.dim]) { dimScores[a.dim]=0; dimMax[a.dim]=0; }
+    dimScores[a.dim] += a.score; dimMax[a.dim] += 3;
+  });
+
+  const totalScore = answers.filter(Boolean).reduce((s,a)=>s+a.score,0);
+  const pct = Math.round((totalScore/(answered*3))*100);
+  diagnosisData = { bizType, audience, challenge, dimScores, dimMax, pct };
+
+  document.getElementById('diagnosis-result').style.display = 'block';
+  document.getElementById('diagnosis-result').scrollIntoView({ behavior:'smooth' });
+
+  animateScore(pct);
+
+  const grade = pct>=80?{label:'High Performer',color:'#22C55E'}:pct>=60?{label:'Growing Business',color:'#C9A84C'}:pct>=40?{label:'Room to Improve',color:'#F59E0B'}:{label:'Urgent Attention Needed',color:'#EF4444'};
+  const gradeEl = document.getElementById('score-grade');
+  gradeEl.textContent = grade.label; gradeEl.style.color = grade.color;
+
+  buildDimensionGrid(dimScores, dimMax);
+  await runAIDiagnosis(bizType, audience, challenge, dimScores, dimMax, pct);
+
+  const weakestDim = Object.entries(dimScores).map(([d,s])=>({d,pct:Math.round((s/dimMax[d])*100)})).sort((a,b)=>a.pct-b.pct)[0]?.d||'Messaging';
+  document.getElementById('diag-upsell-container').innerHTML = getUpsellHTML(weakestDim);
+}
+
+function animateScore(target) {
+  const arc = document.getElementById('score-arc'), display = document.getElementById('score-display');
+  let current = 0;
+  const iv = setInterval(() => {
+    current = Math.min(current+2, target);
+    display.textContent = current;
+    arc.style.strokeDashoffset = 414.7 - (current/100)*414.7;
+    if (current>=target) clearInterval(iv);
+  }, 18);
+}
+
+function buildDimensionGrid(dimScores, dimMax) {
+  document.getElementById('dimension-grid').innerHTML = Object.keys(dimScores).map(dim => {
+    const pct = dimMax[dim] ? Math.round((dimScores[dim]/dimMax[dim])*100) : 0;
+    const color = pct>=70?'#22C55E':pct>=40?'#C9A84C':'#EF4444';
+    const label = pct>=80?'Strong':pct>=60?'Developing':pct>=40?'Needs Work':'Critical Gap';
+    return `<div class="result-card">
+      <div class="rc-label">${dim}</div>
+      <div class="rc-score" style="color:${color}">${pct}%</div>
+      <div class="rc-name">${label}</div>
+      <div class="rc-bar"><div class="rc-bar-fill" style="width:0%;background:${color}" data-w="${pct}"></div></div>
+    </div>`;
+  }).join('');
+  setTimeout(() => document.querySelectorAll('.rc-bar-fill').forEach(el => el.style.width = el.dataset.w+'%'), 200);
+}
+
+async function runAIDiagnosis(bizType, audience, challenge, dimScores, dimMax, pct) {
+  const outputEl = document.getElementById('diag-ai-output');
+  outputEl.innerHTML = `<div class="ai-label">AI Analysis</div><div class="loading-pulse"><div class="pulse-dots"><span></span><span></span><span></span></div>Analysing your business...</div>`;
+
+  const weakDims = Object.entries(dimScores).map(([d,s])=>({d,pct:Math.round((s/dimMax[d])*100)})).sort((a,b)=>a.pct-b.pct).slice(0,3).map(x=>`${x.d} (${x.pct}%)`).join(', ');
+
+  const prompt = `A business owner just completed the SalesIQ self-assessment.
+Business type: ${bizType}
+Target customers: ${audience}
+Biggest challenge: ${challenge||'Not specified'}
+Overall score: ${pct}/100
+Weakest areas: ${weakDims}
+
+Write their personalised diagnosis. Plain simple language. Short sentences. Make them feel understood. Spark curiosity about the full solution.
+
+IMPORTANT: Never say "book," "ebook," "download," or "read." Always say "module," "the full guide," or "inside the program."
+
+Use these exact HTML sections:
+<h4>What Your Score Is Telling You</h4>
+2-3 honest sentences. Make them feel seen.
+
+<h4>Your Biggest Problem Right Now</h4>
+2-3 sentences. Name their single most critical gap. Tell them what it's costing them. Reference the module of the program that fixes this.
+
+<h4>One Thing You Can Do Today</h4>
+ONE specific action from the relevant module. Concrete and simple. End with: The complete system for this is inside Module X of the full guide.
+
+<h4>What Is Actually Working For You</h4>
+1-2 sentences on a genuine strength from their scores.
+
+Under 280 words.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, system:SYSTEM_PROMPT, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content?.find(b=>b.type==='text')?.text || 'Unable to generate analysis.';
+    outputEl.innerHTML = `<div class="ai-label">AI Analysis</div><button class="copy-btn" onclick="copyEl('diag-ai-output')">Copy</button>${text}`;
+  } catch(e) {
+    outputEl.innerHTML = `<div class="ai-label">Analysis</div><p>Your biggest gaps are in: <strong>${weakDims}</strong>. Fix these first for the fastest improvement.</p>`;
+  }
+}
+
+async function buildActionPlan() {
+  if (!diagnosisData) return;
+  const { bizType, audience, dimScores, dimMax, pct } = diagnosisData;
+  const weakest = Object.entries(dimScores).map(([d,s])=>({d,pct:Math.round((s/dimMax[d])*100)})).sort((a,b)=>a.pct-b.pct);
+  const weakestDim = weakest[0]?.d || 'Messaging';
+
+  document.getElementById('action-plan-container').innerHTML = `
+    <div class="ai-output" id="plan-ai-output">
+      <div class="ai-label">Your Action Plan</div>
+      <div class="loading-pulse"><div class="pulse-dots"><span></span><span></span><span></span></div>Building your plan...</div>
+    </div>
+    ${getUpsellHTML(weakestDim)}`;
+
+  const prompt = `Build a personalised action plan for this business owner.
+Business: ${bizType}
+Target customers: ${audience}
+Overall score: ${pct}/100
+Problem areas from worst to best: ${weakest.map(x=>`${x.d}: ${x.pct}%`).join(', ')}
+
+Plain simple language. Short sentences. Make every action feel doable.
+
+IMPORTANT: Never say "book," "ebook," "download," or "read." Always say "module," "the full guide," or "inside the program."
+
+Use this exact HTML structure 5 times:
+<h4>Priority N: [Short plain title]</h4>
+<p><strong>What to do:</strong> One specific action from the relevant module of the program.</p>
+<p><strong>Where to find the full system:</strong> Module X — one plain sentence on what that module covers.</p>
+<p><strong>Do this by:</strong> Simple realistic timeframe.</p>
+
+Then add:
+<h4>Your Single Biggest Win This Month</h4>
+<p>2 sentences — the one thing that will make the biggest difference and where inside the full guide to find the complete step-by-step system.</p>
+
+Under 380 words.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:1000, system:SYSTEM_PROMPT, messages:[{role:'user',content:prompt}] })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    const text = data.content?.find(b=>b.type==='text')?.text || '';
+    document.getElementById('plan-ai-output').innerHTML = `<div class="ai-label">Your Action Plan</div><button class="copy-btn" onclick="copyEl('plan-ai-output')">Copy</button>${text}`;
+  } catch(e) {
+    document.getElementById('plan-ai-output').innerHTML = `<div class="ai-label">Your Plan</div><p>Start with your biggest problem: <strong>${weakest[0]?.d}</strong>. Fix that completely before moving to the next.</p>`;
+  }
+}
+
+function getUpsellHTML(dim) {
+  const m = MODULE_MAP[dim] || MODULE_MAP['Messaging'];
+  return `<div class="upsell-banner">
+    <div style="font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;font-family:'Space Mono',monospace;">Your Next Step</div>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(201,168,76,0.1);border:1px solid var(--gold-d);border-radius:6px;padding:8px 16px;margin-bottom:20px;">
+      <span style="font-size:20px;">${m.icon}</span>
+      <span style="font-size:12px;color:var(--gold-l);font-weight:600;">${m.module} — ${m.title}</span>
+    </div>
+    <h3>This Is the Exact Fix<br>For Your Biggest Problem</h3>
+    <p style="color:var(--text);font-size:15px;max-width:500px;margin:12px auto 10px;line-height:1.8;">
+      Your weakest area right now is <strong style="color:var(--gold-l);">${dim}</strong>.
+      <strong style="color:var(--cream);">${m.module}: ${m.title}</strong> shows you ${m.hook}
+    </p>
+    <p style="color:var(--muted);font-size:14px;max-width:460px;margin:0 auto 28px;line-height:1.7;">That one module alone is worth more than the price of the full program. And there are 11 more — each one fixing a different reason people look but don't buy.</p>
+    <div class="upsell-features">
+      <div class="upsell-feat">Fixes your biggest problem first</div>
+      <div class="upsell-feat">12 modules, 40+ tactics</div>
+      <div class="upsell-feat">90-Day step-by-step plan</div>
+      <div class="upsell-feat">Instant access</div>
+    </div>
+    <a href="https://selar.com/g39453k6o8" target="_blank" style="text-decoration:none;">
+      <button class="btn-primary" style="font-size:15px;padding:15px 36px;">⚡ Yes — Show Me the Full Fix →</button>
+    </a>
+    <div style="margin-top:14px;font-size:11px;color:var(--muted);">
+      One-time purchase · Instant access
+      <span style="color:var(--gold);font-size:12px;font-weight:700;display:block;margin-top:6px;">Stop Guessing. Start Selling.</span>
+    </div>
+  </div>`;
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
+  if (idx===1 && diagnosisData && !document.querySelector('#plan-ai-output .copy-btn')) buildActionPlan();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function copyEl(id) {
+  const el = document.getElementById(id);
+  const text = el.innerText.replace(/^(AI Analysis|Your Action Plan|Analysis)\n/,'').replace(/^Copy\n/,'').trim();
+  navigator.clipboard.writeText(text).then(()=>{
+    const t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200);
+  });
+}
+
+window.addEventListener('scroll',()=>{
+  const h=document.body.scrollHeight-window.innerHeight;
+  document.getElementById('prog').style.width=(h>0?(window.scrollY/h)*100:0)+'%';
+});
+
+renderQuestions();
+</script>
+</body>
+</html>
