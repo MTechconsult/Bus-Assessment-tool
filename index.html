@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SalesIQ — Free Business Diagnostic</title>
+<title>SalesIQ: Free Business Diagnostic</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700&family=Space+Mono&display=swap');
 
@@ -144,7 +144,7 @@ textarea { resize: vertical; min-height: 90px; }
 <div class="hero">
   <div class="hero-eyebrow">Business Growth Intelligence</div>
   <h1>Find Out Exactly<br><em>Why Your Sales Are Stuck</em></h1>
-  <p>Answer 12 questions. Get your business score, a personalised diagnosis, and a prioritised action plan — in under 5 minutes.</p>
+  <p>Answer 12 questions. Get your business score, a personalised diagnosis, and a prioritised action plan, in under 5 minutes.</p>
   <div class="hero-chips">
     <div class="hero-chip"><span>🔍</span> Check My Business</div>
     <div class="hero-chip"><span>📋</span> Get My Action Plan</div>
@@ -187,7 +187,7 @@ textarea { resize: vertical; min-height: 90px; }
 
   <div class="section-label">Self-Assessment</div>
   <div class="section-title" style="font-size:20px;">12 Questions That Reveal Your Sales Reality</div>
-  <p style="color:var(--muted);font-size:13px;margin-bottom:24px;">Select the answer that honestly reflects where your business is today — not where you want it to be.</p>
+  <p style="color:var(--muted);font-size:13px;margin-bottom:24px;">Select the answer that honestly reflects where your business is today, not where you want it to be.</p>
 
   <div id="questions-container"></div>
 
@@ -244,7 +244,7 @@ textarea { resize: vertical; min-height: 90px; }
 <div class="panel" id="panel-1">
   <div class="section-label">Step 2 of 2</div>
   <div class="section-title">Your Personalised Action Plan</div>
-  <div class="section-sub">Based on your diagnosis — your highest-impact moves, in order of priority.</div>
+  <div class="section-sub">Based on your diagnosis, your highest-impact moves, in order of priority.</div>
 
   <div id="action-plan-container">
     <div style="text-align:center;padding:60px 20px;color:var(--muted);">
@@ -267,8 +267,8 @@ const QUESTIONS = [
   { dim:"Trust", text:"Do you offer any form of guarantee, trial, or risk reversal to new customers?", options:[{text:"No they buy or they don't",score:0},{text:"I've thought about it but haven't implemented one",score:1},{text:"I offer something informal but don't promote it",score:2},{text:"Yes a clear, well-communicated guarantee is part of my offer",score:3}]},
   { dim:"Funnel", text:"What happens between someone first discovering you and them making a purchase?", options:[{text:"Nothing I put out content and then ask for a sale",score:0},{text:"I send them to my page but there's no real nurturing",score:1},{text:"I have some email or message sequence but it's basic",score:2},{text:"I have a clear funnel that builds trust before asking for a sale",score:3}]},
   { dim:"Messaging", text:"How often do people tell you they 'need to think about it' or 'will get back to you'?", options:[{text:"Almost every time it's my biggest frustration",score:0},{text:"Often probably half of my conversations",score:1},{text:"Sometimes I convert maybe half of interested leads",score:2},{text:"Rarely most interested people buy or give a clear reason why not",score:3}]},
-  { dim:"Referrals", text:"How much of your new business comes from referrals or word of mouth?", options:[{text:"Very little I have no referral system",score:0},{text:"A few here and there but nothing I can rely on",score:1},{text:"A decent amount — maybe 20–30% of new customers",score:2},{text:"Referrals are a major channel I've built a system for it",score:3}]},
-  { dim:"Funnel", text:"How easy is it for someone to buy from you the moment they decide to?", options:[{text:"There are several steps it can be confusing",score:0},{text:"It's okay but not as smooth as it could be",score:1},{text:"Fairly easy — most people can figure it out",score:2},{text:"Completely frictionless one clear action and they're done",score:3}]},
+  { dim:"Referrals", text:"How much of your new business comes from referrals or word of mouth?", options:[{text:"Very little I have no referral system",score:0},{text:"A few here and there but nothing I can rely on",score:1},{text:"A decent amount, maybe 20–30% of new customers",score:2},{text:"Referrals are a major channel I've built a system for it",score:3}]},
+  { dim:"Funnel", text:"How easy is it for someone to buy from you the moment they decide to?", options:[{text:"There are several steps it can be confusing",score:0},{text:"It's okay but not as smooth as it could be",score:1},{text:"Fairly easy, most people can figure it out",score:2},{text:"Completely frictionless one clear action and they're done",score:3}]},
 ];
 
 const MODULE_MAP = {
@@ -284,15 +284,16 @@ const MODULE_MAP = {
 
 const SYSTEM_PROMPT = `You are the AI coach behind a sales and marketing growth program called "Why Customers Look But Never Buy - And Exactly How to Fix It". Every piece of advice you give comes DIRECTLY from this program. 
 
-CRITICAL RULES — NEVER BREAK THESE:
+CRITICAL RULES, NEVER BREAK THESE:
 1. NEVER use the words: book, ebook, read, download, pages, chapter. Use "module," "section," or "the full guide" instead.
 2. Every solution must come from a specific module of this program
 3. Always reference it as "Module X of the program" or "inside the full guide"
-4. Give ONE concrete first step from the relevant module as a taste — not the full system
+4. Give ONE concrete first step from the relevant module as a taste, not the full system
 5. Make clear the complete system is inside the full guide
 6. Write in plain simple language short sentences, no jargon, talk like a real person
 7. Trigger emotion and curiosity make them feel understood and want to know more
 8. Be specific to their type of business
+9. Never use the em dash (—) anywhere in your writing. Use commas, periods, or colons instead
 
 PROGRAM CONTENT:
 
@@ -302,7 +303,7 @@ THE 5 BUYING TRIGGERS: 1. Pain Avoidance 2. Status and Identity 3. Safety and Tr
 THE BUYER DECISION LOOP: Awareness → Search → Evaluation → Trust Verification → Purchase Decision
 
 MODULE 2: MARKET INTELLIGENCE
-The business that knows its market best will always win. THE GAP METHOD: Read competitor complaints online — those are your opportunities.
+The business that knows its market best will always win. THE GAP METHOD: Read competitor complaints online, those are your opportunities.
 
 MODULE 3: POSITIONING THAT WINS
 POSITIONING STATEMENT FORMULA: For [specific customer] who struggle with [specific problem], your business provides [specific solution], unlike the alternative because [your difference]. Biggest mistake: trying to appeal to everyone.
@@ -317,7 +318,7 @@ MODULE 6: FOLLOW-UP THAT CONVERTS
 THE 7-TOUCH FOLLOW-UP SEQUENCE: Day 1 recap, Day 3 value, Day 5 proof, Day 8 objection answer, Day 12 urgency, Day 16 last call, Day 30 long game.
 
 MODULE 7: THE ATTENTION ECONOMY
-THE 3-SECOND TEST: content must trigger curiosity, promise a specific outcome, or provoke a reaction — instantly.
+THE 3-SECOND TEST: content must trigger curiosity, promise a specific outcome, or provoke a reaction, instantly.
 
 MODULE 8: CONTENT THAT SELLS
 THE CONTENT MIX 50/20/15/15: 50% education, 20% proof, 15% behind the scenes, 15% direct offer. THE AIDA STRUCTURE: Attention, Interest, Desire, Action.
@@ -497,12 +498,12 @@ IMPORTANT: Never say "book," "ebook," "download," or "read." Always say "module,
 Use this exact HTML structure 5 times:
 <h4>Priority N: [Short plain title]</h4>
 <p><strong>What to do:</strong> One specific action from the relevant module of the program.</p>
-<p><strong>Where to find the full system:</strong> Module X — one plain sentence on what that module covers.</p>
+<p><strong>Where to find the full system:</strong> Module X: one plain sentence on what that module covers.</p>
 <p><strong>Do this by:</strong> Simple realistic timeframe.</p>
 
 Then add:
 <h4>Your Single Biggest Win This Month</h4>
-<p>2 sentences — the one thing that will make the biggest difference and where inside the full guide to find the complete step-by-step system.</p>
+<p>2 sentences, the one thing that will make the biggest difference and where inside the full guide to find the complete step-by-step system.</p>
 
 Under 380 words.`;
 
@@ -527,14 +528,14 @@ function getUpsellHTML(dim) {
     <div style="font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;font-family:'Space Mono',monospace;">Your Next Step</div>
     <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(201,168,76,0.1);border:1px solid var(--gold-d);border-radius:6px;padding:8px 16px;margin-bottom:20px;">
       <span style="font-size:20px;">${m.icon}</span>
-      <span style="font-size:12px;color:var(--gold-l);font-weight:600;">${m.module} — ${m.title}</span>
+      <span style="font-size:12px;color:var(--gold-l);font-weight:600;">${m.module}: ${m.title}</span>
     </div>
     <h3>This Is the Exact Fix<br>For Your Biggest Problem</h3>
     <p style="color:var(--text);font-size:15px;max-width:500px;margin:12px auto 10px;line-height:1.8;">
       Your weakest area right now is <strong style="color:var(--gold-l);">${dim}</strong>.
       <strong style="color:var(--cream);">${m.module}: ${m.title}</strong> shows you ${m.hook}
     </p>
-    <p style="color:var(--muted);font-size:14px;max-width:460px;margin:0 auto 28px;line-height:1.7;">That one module alone is worth more than the price of the full program. And there are 11 more — each one fixing a different reason people look but don't buy.</p>
+    <p style="color:var(--muted);font-size:14px;max-width:460px;margin:0 auto 28px;line-height:1.7;">That one module alone is worth more than the price of the full program. And there are 11 more, each one fixing a different reason people look but don't buy.</p>
     <div class="upsell-features">
       <div class="upsell-feat">Fixes your biggest problem first</div>
       <div class="upsell-feat">12 modules, 40+ tactics</div>
@@ -542,7 +543,7 @@ function getUpsellHTML(dim) {
       <div class="upsell-feat">Instant access</div>
     </div>
     <a href="https://selar.com/g39453k6o8" target="_blank" style="text-decoration:none;">
-      <button class="btn-primary" style="font-size:15px;padding:15px 36px;">⚡ Yes — Show Me the Full Fix →</button>
+      <button class="btn-primary" style="font-size:15px;padding:15px 36px;">⚡ Yes, Show Me the Full Fix →</button>
     </a>
     <div style="margin-top:14px;font-size:11px;color:var(--muted);">
       One-time purchase · Instant access
